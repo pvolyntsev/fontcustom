@@ -6,6 +6,7 @@ module Fontcustom
 
     def initialize(raw_options)
       check_fontforge
+      check_woff2
       manifest = '.fontcustom-manifest.json'
       raw_options[:manifest] = manifest
       @options = Fontcustom::Options.new(raw_options).options
@@ -33,6 +34,13 @@ module Fontcustom
       fontforge = `which fontforge`
       if fontforge == '' || fontforge == 'fontforge not found'
         fail Fontcustom::Error, 'Please install fontforge first. Visit <http://fontcustom.com> for instructions.'
+      end
+    end
+
+    def check_woff2
+      woff2 = `which woff2_compress`
+      if woff2 == '' || woff2 == 'woff2_compress not found'
+        fail Fontcustom::Error, 'Please install woff2 first. Visit <https://github.com/google/woff2> for instructions.'
       end
     end
 
