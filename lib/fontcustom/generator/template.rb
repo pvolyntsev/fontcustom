@@ -33,6 +33,7 @@ module Fontcustom
       def set_relative_paths
         fonts = @manifest.get :fonts
         name = File.basename fonts.first, File.extname(fonts.first)
+        base_path = Pathname.new(@options[:output][:base]).realdirpath
         fonts_path = Pathname.new(@options[:output][:fonts]).realdirpath
         css_path = Pathname.new(@options[:output][:css]).realdirpath
         preview_path = Pathname.new(@options[:output][:preview]).realdirpath
@@ -44,7 +45,7 @@ module Fontcustom
         else
           File.join(@options[:preprocessor_path], name)
         end
-        @font_path_preview = File.join fonts_path.relative_path_from(preview_path).to_s, name
+        @font_path_preview = File.join preview_path.relative_path_from(base_path).to_s
       end
 
       def create_files
@@ -55,7 +56,7 @@ module Fontcustom
           @options[:templates].each do |template_name|
             begin
               source = get_source_path(template_name)
-              target = get_target_path(source)
+              target = get_target_path(template_name, source)
               template source, target, verbose: false, force: true
             end
             created << target
@@ -83,16 +84,25 @@ module Fontcustom
         end
       end
 
-      def get_target_path(source)
+      def get_target_path(template_name, source)
+        base_path = @options[:output][:base]
         ext = File.extname source
         base = File.basename source
-        css_exts = %w(.css .scss .sass .less .stylus)
+        css_paths = {
+            '.css' => @options[:output][:css],
+            '.scss' => @options[:output][:scss],
+            '.sass' => @options[:output][:sass],
+            '.less' => @options[:output][:less],
+            '.stylus' => @options[:output][:stylus],
+        }
         packaged = %w(fontcustom-preview.html fontcustom.css _fontcustom.scss _fontcustom-rails.scss)
 
         target = if @options[:output].keys.include? base.to_sym
           File.join @options[:output][base.to_sym], base
-        elsif ext && css_exts.include?(ext)
-          File.join @options[:output][:css], base
+        elsif template_name.include?('/')
+          File.join base_path, template_name
+        elsif ext && css_paths[ext]
+          File.join css_paths[ext], template_name
         elsif source.match(/fontcustom-preview\.html/)
           File.join @options[:output][:preview], base
         else

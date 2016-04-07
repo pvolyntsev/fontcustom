@@ -140,8 +140,13 @@ module Fontcustom
           end
         end
 
-        @options[:output][:css] ||= @options[:output][:fonts]
-        @options[:output][:preview] ||= @options[:output][:fonts]
+        @options[:output][:base] ||= @options[:output][:fonts]
+        @options[:output][:css] ||= @options[:output][:base]
+        @options[:output][:preview] ||= @options[:output][:base]
+        @options[:output][:less] ||= @options[:output][:css]
+        @options[:output][:scss] ||= @options[:output][:css]
+        @options[:output][:sass] ||= @options[:output][:css]
+        @options[:output][:stylus] ||= @options[:output][:css]
       else
         if @options[:output].is_a? String
           output = @options[:output]
@@ -155,8 +160,13 @@ module Fontcustom
         end
 
         @options[:output] = {
+          base: output,
           fonts: output,
           css: output,
+          less: output,
+          scss: output,
+          sass: output,
+          stylus: output,
           preview: output
         }
       end
