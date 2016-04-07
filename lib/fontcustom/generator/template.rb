@@ -103,7 +103,7 @@ module Fontcustom
           File.join base_path, template_name
         elsif ext && css_paths[ext]
           File.join css_paths[ext], template_name
-        elsif source.match(/fontcustom-preview\.html/)
+        elsif source.match(/preview\.html/)
           File.join @options[:output][:preview], base
         else
           File.join @options[:output][:fonts], base
