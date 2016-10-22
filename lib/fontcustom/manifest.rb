@@ -44,6 +44,7 @@ module Fontcustom
 
     def delete(key)
       files = get(key)
+      return if files.nil?
       return if files.empty?
       begin
         deleted = []
