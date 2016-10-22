@@ -49,7 +49,7 @@ if options['autowidth']:
 
 def removeSwitchFromSvg( file ):
     svgfile = open(file, 'r')
-    svgtext = svgfile.read()
+    svgtext = svgfile.read().decode('utf-8')
     svgfile.close()
     tmpsvgfile = tempfile.NamedTemporaryFile(suffix=".svg", delete=False)
     svgtext = svgtext.replace('<switch>', '')
